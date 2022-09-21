@@ -1,18 +1,18 @@
-import characters from "../data/harry_potter/characters.json" assert { type: "json" };
+import characters from '../data/harry_potter/characters.json' assert { type: 'json' };
 
-const characterContainer = document.getElementById("main");
+const characterContainer = document.getElementById('main');
 
 /* NO NEED TO CHANGE  */
 const cleanCardContainer = () => {
-  characterContainer.innerHTML = "";
+  characterContainer.innerHTML = '';
 };
 
 const createCards = (characters) => {
   cleanCardContainer();
 
   if (characters.length === 0) {
-    const textElement = document.createElement("p");
-    const text = document.createTextNode("No character matches the filter");
+    const textElement = document.createElement('p');
+    const text = document.createTextNode('No character matches the filter');
     textElement.appendChild(text);
     characterContainer.appendChild(textElement);
     return;
@@ -20,42 +20,42 @@ const createCards = (characters) => {
 
   characters.forEach((character, index) => {
     const { name, image, house, species, gender } = character;
-    const card = document.createElement("div");
-    card.classList.add("card");
+    const card = document.createElement('div');
+    card.classList.add('card');
 
-    const img = document.createElement("img");
-    img.setAttribute("src", image);
+    const img = document.createElement('img');
+    img.setAttribute('src', image);
 
-    const mainCardContainer = document.createElement("div");
-    mainCardContainer.classList.add("card-container");
+    const mainCardContainer = document.createElement('div');
+    mainCardContainer.classList.add('card-container');
 
-    const logo = document.createElement("img");
-    logo.setAttribute("src", `./assets/${house}.webp`);
+    const logo = document.createElement('img');
+    logo.setAttribute('src', `./assets/${house}.webp`);
 
-    const textContainer = document.createElement("div");
-    textContainer.classList.add("card-text-container");
+    const textContainer = document.createElement('div');
+    textContainer.classList.add('card-text-container');
 
-    const titleElement = document.createElement("h2");
+    const titleElement = document.createElement('h2');
     const titleText = document.createTextNode(name);
     titleElement.appendChild(titleText);
 
-    const speciesElement = document.createElement("span");
+    const speciesElement = document.createElement('span');
     speciesElement.classList.add(`tag`);
     const speciesText = document.createTextNode(species);
     speciesElement.appendChild(speciesText);
 
-    const genderElement = document.createElement("span");
+    const genderElement = document.createElement('span');
     const genderText = document.createTextNode(gender);
     genderElement.classList.add(`tag-${gender}`);
     genderElement.classList.add(`tag`);
     genderElement.appendChild(genderText);
 
-    const buttonContainer = document.createElement("div");
-    buttonContainer.classList.add("button-container");
-    const button = document.createElement("button");
-    const buttonText = document.createTextNode("Choose");
+    const buttonContainer = document.createElement('div');
+    buttonContainer.classList.add('button-container');
+    const button = document.createElement('button');
+    const buttonText = document.createTextNode('Choose');
     button.classList.add(`choose-button`);
-    button.setAttribute("id", `${index}`);
+    button.setAttribute('id', `${index}`);
     button.appendChild(buttonText);
     buttonContainer.appendChild(button);
 
@@ -79,49 +79,64 @@ const createCards = (characters) => {
 };
 
 createCards(characters);
-
 /* ABOVE HERE, DO NOT CHANGE */
 
 /* FROM HERE, ALL CODE BELOW CAN BE CHANGED AND REFACTORED */
 
-const chooseRandomButton = document.getElementById("choose-random");
+const chooseRandomButton = document.getElementById('choose-random');
 
 let random;
-chooseRandomButton.addEventListener("click", () => {
-  if (!random) {
-    random = Math.floor(Math.random() * characters.length);
-  }
+chooseRandomButton.addEventListener('click', () => {
+  // if (!random) {
+  random = Math.floor(Math.random() * characters.length);
+  // }
   createCards([characters[random]]);
+  createChooseBtns(characters);
 });
 
-const chooseButtons = Array.from(
-  document.getElementsByClassName("choose-button")
-);
+//function start
+const createChooseBtns = (selectedCharacters) => {
+  const chooseButtons = Array.from(
+    document.getElementsByClassName('choose-button')
+  );
 
-chooseButtons[0].addEventListener("click", (e) => {
-  createCards([characters[e.target.id]]);
-});
+  chooseButtons.forEach((button) =>
+    button.addEventListener('click', (e) => {
+      createCards([selectedCharacters[e.target.id]]);
+    })
+  );
+};
+//end
+createChooseBtns(characters);
+const selects = document.getElementsByTagName('select');
 
-const selects = document.getElementsByTagName("select");
-const resetButton = document.getElementById("reset-button");
+const resetButton = document.getElementById('reset-button');
 const reset = () => {
-  selects.forEach((select) => {
-    select.value = "all";
+  /*Array.from(selects)*/ [...selects].forEach((select) => {
+    select.value = 'all';
   });
+  createCards(characters);
+  createChooseBtns(characters);
 };
 
-resetButton.addEventListener("click", reset);
+resetButton.addEventListener('click', reset);
 
-const filterButton = document.getElementById("filter-button");
+const filterButton = document.getElementById('filter-button');
 
 const filter = () => {
-  let filtered = [];
-  Array.from(selects).forEach((select) => {
-    filtered = characters.filter(
-      (character) => character[select.name].toLowerCase() === select.value
-    );
-  });
-  createCards(filtered);
-};
+  let filtered = characters.filter((character) =>
+    Array.from(selects).every(({ value, name }) => {
+      return value === 'all' || character[name].toLowerCase() === value;
+    })
+  );
 
-filterButton.addEventListener("click", filter);
+  createCards(filtered);
+  createChooseBtns(filtered);
+  //call func
+};
+filterButton.addEventListener('click', filter);
+
+const tags = document.getElementsByClassName('tag');
+console.log(tags);
+
+console.log('Potatoes');

@@ -1,5 +1,5 @@
-const characters = require("../data/harry_potter/characters.json");
-const solution = require("../solutions/solution5");
+const characters = require('../data/harry_potter/characters.json');
+const solution = require('../solutions/solution5');
 
 // filter all characters that are
 // 1. male
@@ -16,19 +16,19 @@ const solution = require("../solutions/solution5");
 
 // HINT: there should only be 83 of them
 
-const formattedCharacters = characters.map((character) => {
-  if (
-    (character.gender == "male" && character.species == "human") ||
-    character.house !== null
-  ) {
-    return {
-      name: character.name,
-      house: character.house,
-    };
-  }
-});
+const formattedCharacters = characters
+  .filter(
+    (character) =>
+      character.gender == 'male' &&
+      character.species == 'human' &&
+      character.house
+  )
+  .map((character) => ({
+    name: character.name,
+    house: character.house,
+  }));
 
 console.log(
-  "Exercie 5 passed: ",
+  'Exercie 5 passed: ',
   JSON.stringify(formattedCharacters) === JSON.stringify(solution)
 );
